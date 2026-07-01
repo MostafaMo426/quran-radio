@@ -616,6 +616,7 @@ function initLanguage() {
   }
   
   applyTranslations(startLang);
+  updateLangSelectLabels();
   
   if (langSelect) {
     langSelect.addEventListener('change', async (e) => {
@@ -624,6 +625,7 @@ function initLanguage() {
       
       // Update directions, tooltips, static UI texts instantly
       applyTranslations(selected);
+      updateLangSelectLabels();
       showLoadersOnLangSwitch();
       
       try {
@@ -648,6 +650,12 @@ function applyTranslations(lang) {
   const isRtl = (lang === 'ar' || lang === 'ur');
   document.documentElement.setAttribute('dir', isRtl ? 'rtl' : 'ltr');
   document.documentElement.setAttribute('lang', lang);
+  
+  // Update language selector wrapper direction to match selected language direction
+  const langSelectWrapper = document.querySelector('.lang-select-wrapper');
+  if (langSelectWrapper) {
+    langSelectWrapper.setAttribute('dir', isRtl ? 'rtl' : 'ltr');
+  }
   
   localStorage.setItem('quran_radio_lang', lang);
   
@@ -679,6 +687,40 @@ function applyTranslations(lang) {
     const key = el.getAttribute('data-i18n-title');
     if (translations[lang] && translations[lang][key]) {
       el.title = translations[lang][key];
+    }
+  });
+}
+
+/**
+ * Dynamically switch language selector labels between short codes (mobile) and full names (desktop)
+ */
+function updateLangSelectLabels() {
+  const langSelect = document.getElementById('lang-select');
+  if (!langSelect) return;
+
+  const isMobile = window.innerWidth < 768;
+  const labels = isMobile ? {
+    ar: 'AR',
+    en: 'EN',
+    fr: 'FR',
+    ur: 'UR',
+    tr: 'TR',
+    id: 'ID',
+    ms: 'MS'
+  } : {
+    ar: 'العربية',
+    en: 'English',
+    fr: 'Français',
+    ur: 'اردو',
+    tr: 'Türkçe',
+    id: 'Bahasa Indonesia',
+    ms: 'Bahasa Melayu'
+  };
+
+  Array.from(langSelect.options).forEach(opt => {
+    const lang = opt.value;
+    if (labels[lang]) {
+      opt.textContent = labels[lang];
     }
   });
 }
@@ -802,7 +844,10 @@ function setupCanvas() {
   };
   
   resizeCanvas();
-  window.addEventListener('resize', resizeCanvas);
+  window.addEventListener('resize', () => {
+    resizeCanvas();
+    updateLangSelectLabels();
+  });
 }
 
 /**
@@ -991,6 +1036,39 @@ function setupUIEventListeners() {
   surahSearchInput.addEventListener('input', (e) => {
     filterSurahsGrid(e.target.value);
   });
+
+  // Auto-hide header on scroll-down
+  setupHeaderScrollBehavior();
+}
+
+/**
+ * Auto-hide header on scroll down, show on scroll up.
+ */
+function setupHeaderScrollBehavior() {
+  const header = document.querySelector('.app-header');
+  if (!header) return;
+
+  let lastScrollY = window.scrollY;
+
+  window.addEventListener('scroll', () => {
+    const currentScrollY = window.scrollY;
+
+    // Prevent issues with negative scroll on iOS elastic scroll
+    if (currentScrollY <= 0) {
+      header.classList.remove('header-hidden');
+      lastScrollY = currentScrollY;
+      return;
+    }
+
+    // Hide header on scroll down, show on scroll up
+    if (currentScrollY > lastScrollY && currentScrollY > 100) {
+      header.classList.add('header-hidden');
+    } else if (currentScrollY < lastScrollY) {
+      header.classList.remove('header-hidden');
+    }
+
+    lastScrollY = currentScrollY;
+  }, { passive: true });
 }
 
 /**
