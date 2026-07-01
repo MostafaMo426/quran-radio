@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  icecast:
+    image: infiniteproject/icecast:latest
+    container_name: quran_radio_icecast
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      - ICECAST_HOSTNAME=localhost
+      - ICECAST_ADMIN_USERNAME=admin
+      - ICECAST_ADMIN_PASSWORD=admin
+      - ICECAST_SOURCE_PASSWORD=hackme
+      - ICECAST_RELAY_PASSWORD=hackme
+      - ICECAST_LOCATION=LocalTest
+      - ICECAST_MAX_CLIENTS=100
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"

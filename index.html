@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>إذاعة القرآن الكريم | البث المباشر والمكتبة الصوتية</title>
+  
+  <!-- Google Fonts for Amiri, Inter, Noto Naskh Arabic -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Inter:wght@300;400;500;600;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="styles.css?v=2">
+</head>
+<body>
+
+  <!-- Background Rotating Arabesque Star -->
+  <div id="bg-geometric-pattern">
+    <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="0.3">
+      <path d="M50 2 L61 35 L98 50 L61 65 L50 98 L39 65 L2 50 L39 35 Z"></path>
+      <path d="M50 15 L58 42 L85 50 L58 58 L50 85 L42 58 L15 50 L42 42 Z"></path>
+      <!-- Concentric geometric rosette outlines -->
+      <rect x="25" y="25" width="50" height="50" transform="rotate(15 50 50)"></rect>
+      <rect x="25" y="25" width="50" height="50" transform="rotate(30 50 50)"></rect>
+      <rect x="25" y="25" width="50" height="50" transform="rotate(45 50 50)"></rect>
+      <rect x="25" y="25" width="50" height="50" transform="rotate(60 50 50)"></rect>
+      <rect x="25" y="25" width="50" height="50" transform="rotate(75 50 50)"></rect>
+      <circle cx="50" cy="50" r="10"></circle>
+      <circle cx="50" cy="50" r="5"></circle>
+    </svg>
+  </div>
+
+  <!-- Header Section -->
+  <header class="app-header">
+    <div class="container header-container">
+      <div class="brand-section">
+        <div class="logo-container">
+          <!-- Mosque Line-art SVG -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <!-- Central Dome -->
+            <path d="M6 14c0-3.3 2.7-6 6-6s6 2.7 6 6H6Z" fill="currentColor" fill-opacity="0.1" />
+            <!-- Minaret Left -->
+            <path d="M3 21V10l1.5-2.5L6 10v11" />
+            <path d="M2.5 10h4" />
+            <path d="M4.5 7.5V4" />
+            <!-- Minaret Right -->
+            <path d="M18 21V10l1.5-2.5 1.5 2.5v11" />
+            <path d="M17.5 10h4" />
+            <path d="M19.5 7.5V4" />
+            <!-- Dome Spire -->
+            <path d="M12 8V5" />
+            <!-- Base Line -->
+            <path d="M2 21h20" />
+            <!-- Door/Arch -->
+            <path d="M10 21v-4a2 2 0 0 1 4 0v4" />
+          </svg>
+        </div>
+        <div class="brand-details">
+          <h1 class="brand-title" data-i18n="brand_title">إذاعة القرآن الكريم</h1>
+          <p class="brand-subtitle" data-i18n="brand_subtitle">QURAN WEB RADIO & ON-DEMAND LIBRARY</p>
+        </div>
+      </div>
+      
+      <div class="header-actions">
+        <!-- Language Switcher Dropdown -->
+        <div class="lang-select-wrapper">
+          <select id="lang-select" class="lang-select" data-i18n-title="select_language" title="اختر اللغة / Select Language">
+            <option value="ar">العربية</option>
+            <option value="en">English</option>
+            <option value="fr">Français</option>
+            <option value="ur">اردو</option>
+            <option value="tr">Türkçe</option>
+            <option value="id">Bahasa Indonesia</option>
+            <option value="ms">Bahasa Melayu</option>
+          </select>
+          <svg class="lang-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="2" y1="12" x2="22" y2="12"></line>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+          </svg>
+        </div>
+
+        <!-- Audio Source Mode Badge -->
+        <span id="player-mode-badge" class="badge badge-danger" data-i18n="live_mode">
+          <span class="badge-dot animate-pulse"></span>
+          بث مباشر
+        </span>
+
+        <!-- Dark/Light Theme Switcher -->
+        <button id="theme-toggle-btn" class="btn btn-icon-only theme-toggle-btn" data-i18n-title="theme_toggle" title="تبديل المظهر">
+          <!-- Sun Icon (visible in dark mode) -->
+          <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
+          </svg>
+          <!-- Moon Icon (visible in light mode) -->
+          <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Shimmering Bismillah banner -->
+    <div class="bismillah-container divider-shimmer">
+      ﷽
+    </div>
+    <hr class="gold-shimmer-divider">
+  </header>
+
+  <!-- Main Container -->
+  <main class="container main-content">
+
+    <!-- Top Grid: Live Player Companion & Radio Select -->
+    <section class="grid-cols-12">
+      
+      <!-- Visual Player Companion -->
+      <div class="lg-span-7 flat-card">
+        <div class="flat-card-title-group" style="display: flex; justify-content: space-between; align-items: flex-start;">
+          <div>
+            <span class="card-label" data-i18n="visualizer_label">المشغل المرئي</span>
+            <h2 class="card-title" data-i18n="visualizer_title" style="font-size: 1.35rem; margin-top: 0.25rem;">موجات التلاوة</h2>
+            <p class="card-subtitle" data-i18n="visualizer_subtitle">التردد الصوتي التفاعلي للبث</p>
+          </div>
+          <div style="color: var(--color-accent); display: flex; align-items: center;">
+            <svg style="width: 1.35rem; height: 1.35rem;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2v20M17 5v14M22 9v6M7 7v10M2 10v4"></path>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Custom Audio Element (Hidden) -->
+        <audio id="audio-player" style="display:none;"></audio>
+
+        <!-- Visualizer Canvas Area -->
+        <div id="visualizer-container-box" class="visualizer-container">
+          <canvas id="visualizer"></canvas>
+          <div id="visualizer-fallback" class="visualizer-overlay">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 18V5l12-2v13"></path>
+              <circle cx="6" cy="18" r="3"></circle>
+              <circle cx="18" cy="16" r="3"></circle>
+            </svg>
+            <span data-i18n="visualizer_fallback">شغل الصوت لتنشيط المؤثرات البصرية</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="lg-span-5 flat-card">
+        <div class="flat-card-title-group">
+          <span class="card-label" data-i18n="radios_label">الراديو والمحطات</span>
+          <h2 class="card-title" data-i18n="radios_title">المحطات الإذاعية المباشرة</h2>
+          <p class="card-subtitle" data-i18n="radios_subtitle">اختر من بين أكثر من 150 بثًا مباشرًا</p>
+        </div>
+
+        <!-- Search Radio stations -->
+        <div class="search-container">
+          <input id="radio-search-input" type="text" data-i18n-placeholder="search_radio_placeholder" placeholder="البحث عن إذاعة (مثال: القاهرة، المنشاوي)..." class="search-input">
+          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </div>
+
+        <!-- Quick access presets -->
+        <div class="preset-list">
+          <button data-radio-id="cairo" class="quick-radio-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="2"></circle>
+              <path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"></path>
+            </svg>
+            <span data-i18n="preset_cairo">إذاعة القاهرة</span>
+          </button>
+          <button data-radio-id="saudi" class="quick-radio-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="2"></circle>
+              <path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"></path>
+            </svg>
+            <span data-i18n="preset_saudi">إذاعة المملكة</span>
+          </button>
+        </div>
+
+        <!-- Radios Scrollable List -->
+        <div id="radios-list-container" class="scroll-list custom-scrollbar">
+          <div class="shimmer-card"></div>
+          <div class="shimmer-card"></div>
+          <div class="shimmer-card"></div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Bottom Section: On-Demand Library -->
+    <section class="flat-card">
+      
+      <!-- Section Header -->
+      <div class="flat-card-title-group" style="display: flex; flex-direction: column; justify-content: space-between; align-items: flex-start; gap: 1rem; border-bottom: 1px solid var(--color-border); padding-bottom: 1rem;">
+        <div>
+          <div class="badge-group">
+            <span class="badge badge-success">
+              <span class="badge-dot"></span>
+              <span data-i18n="library_badge">المكتبة الصوتية الشاملة</span>
+            </span>
+          </div>
+          <h2 class="card-title" data-i18n="library_title" style="font-size: 1.5rem; margin-top: 0.5rem;">الاستماع حسب الطلب</h2>
+          <p class="card-subtitle" data-i18n="library_subtitle">ابحث عن قارئك المفضل، واختر الرواية والسورة للاستماع الفوري.</p>
+        </div>
+        <div id="library-status-badge" class="badge badge-success" style="display: none;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 0.9rem; height: 0.9rem;">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
+          <span data-i18n="library_status">متصل بخادم المصادر ومحدث</span>
+        </div>
+      </div>
+
+      <!-- Reciter & Moshaf Dropdowns Row -->
+      <div class="library-grid">
+        
+        <!-- Reciter Select Column -->
+        <div class="form-group">
+          <label for="reciters-dropdown" class="form-label" data-i18n="select_reciter_label">1. اختر القارئ (Reciter)</label>
+          <div class="search-container" style="margin-bottom: 0.5rem;">
+            <input id="reciter-search-input" type="text" data-i18n-placeholder="search_reciter_placeholder" placeholder="ابحث عن قارئ..." class="search-input">
+            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+          </div>
+          
+          <div class="dropdown-wrapper">
+            <select id="reciters-dropdown" class="dropdown-select">
+              <option value="" disabled selected data-i18n="loading_reciters">جاري تحميل القراء...</option>
+            </select>
+            <svg class="dropdown-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Edition / Rewaya Select Column -->
+        <div class="form-group">
+          <label for="moshaf-dropdown" class="form-label" data-i18n="select_edition_label">2. رواية / نوع المصحف (Edition)</label>
+          <div class="dropdown-wrapper">
+            <select id="moshaf-dropdown" class="dropdown-select" disabled>
+              <option value="" disabled selected data-i18n="select_reciter_first">اختر القارئ أولاً...</option>
+            </select>
+            <svg class="dropdown-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </div>
+          <p class="form-help">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="16" x2="12" y2="12"></line>
+              <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+            <span data-i18n="form_help_text">تتوفر روايات متعددة لبعض القراء (حفص، ورش، قالون).</span>
+          </p>
+        </div>
+
+        <!-- Surah Search Column -->
+        <div class="form-group">
+          <label for="surah-search-input" class="form-label" data-i18n="search_surah_label">البحث السريع في السور</label>
+          <div class="search-container">
+            <input id="surah-search-input" type="text" data-i18n-placeholder="search_surah_placeholder" placeholder="ابحث عن سورة بالاسم..." class="search-input" disabled>
+            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Surah Selection Container -->
+      <div style="margin-top: 1rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+          <label class="form-label" data-i18n="select_surah_label" style="font-size: 0.85rem;">3. اختر السورة للتشغيل (Surah)</label>
+          <span style="font-size: 0.75rem; color: var(--color-text-secondary);">
+            <span data-i18n="available_surahs">السور المتوفرة:</span> <strong id="surah-count-badge" style="color: var(--color-primary);">0</strong>
+          </span>
+        </div>
+
+        <!-- Grid of Surahs -->
+        <div id="surahs-grid-container" class="surah-grid custom-scrollbar">
+          <!-- Default placeholder state -->
+          <div class="empty-placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2zM22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+            </svg>
+            <p data-i18n="empty_placeholder">الرجاء اختيار القارئ والرواية لعرض السور المتاحة للاستماع</p>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Footer Section -->
+  <footer class="app-footer">
+    <div class="container footer-container">
+      <p data-i18n="footer_copyright">© 2026 إذاعة القرآن الكريم الإلكترونية. جميع الحقوق محفوظة.</p>
+      <div class="footer-links">
+        <a href="https://mp3quran.net" target="_blank" data-i18n="footer_link">الموقع الرسمي MP3Quran</a>
+        <span>•</span>
+        <span style="color: var(--color-accent); display: flex; align-items: center; gap: 0.25rem;">
+          <span class="badge-dot animate-pulse" style="background-color: var(--color-accent); height: 0.4rem; width: 0.4rem;"></span>
+          <span data-i18n="footer_update">تحديث تلقائي للمصادر عبر API v3</span>
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Spotify-style Fixed Player Controls Bar -->
+  <div class="player-bottom-bar">
+    <!-- Left: Now playing metadata -->
+    <div class="bottom-bar-info">
+      <div class="info-thumbnail">
+        <svg id="player-status-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="2"></circle>
+          <path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"></path>
+        </svg>
+      </div>
+      <div class="info-text">
+        <span id="now-playing-title" class="info-title" data-i18n="now_playing_loading">جاري تحميل الإذاعة...</span>
+        <span id="now-playing-subtitle" class="info-subtitle" data-i18n="please_wait">يرجى الانتظار</span>
+      </div>
+    </div>
+
+    <!-- Center: Playback Controls & Progress -->
+    <div class="bottom-bar-controls">
+      <!-- Playback Row -->
+      <div class="bottom-bar-playback-row">
+        <button id="prev-track-btn" class="btn btn-icon-only" data-i18n-title="prev_track" title="السورة السابقة / المحطة السابقة">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="19 20 9 12 19 4 19 20"></polygon>
+            <line x1="5" y1="19" x2="5" y2="5"></line>
+          </svg>
+        </button>
+        
+        <button id="play-pause-btn" class="btn-play-pause" data-i18n-title="play_pause" title="تشغيل / إيقاف مؤقت">
+          <span id="play-pause-icon" style="display: flex; align-items: center;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="6 3 20 12 6 21 6 3"></polygon>
+            </svg>
+          </span>
+        </button>
+        
+        <button id="next-track-btn" class="btn btn-icon-only" data-i18n-title="next_track" title="السورة التالية / المحطة التالية">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="5 4 15 12 5 20 5 4"></polygon>
+            <line x1="19" y1="5" x2="19" y2="19"></line>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Timeline progress Row -->
+      <div id="timeline-container" class="bottom-bar-timeline-row">
+        <span id="time-current" class="bottom-time">00:00</span>
+        <input id="progress-bar" type="range" min="0" max="100" value="0">
+        <span id="time-total" class="bottom-time">00:00</span>
+      </div>
+    </div>
+
+    <!-- Right: Volume & Reset -->
+    <div class="bottom-bar-extras">
+      <!-- Reset button inside bottom bar -->
+      <button id="reset-player-btn" class="btn" data-i18n-title="reset_player" title="إعادة تعيين المشغل">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 0.85rem; height: 0.85rem; margin-left: 0.25rem;">
+          <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+          <path d="M3 3v5h5"></path>
+        </svg>
+        <span data-i18n="reset_player_btn">إعادة الضبط</span>
+      </button>
+
+      <div class="bottom-volume">
+        <button id="mute-btn" class="btn btn-icon-only" style="border: none; background: transparent; width: 1.75rem; height: 1.75rem;" data-i18n-title="mute_btn" title="كتم الصوت">
+          <span id="mute-icon" style="display: flex; align-items: center; color: var(--color-text-secondary);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+              <path d="M15.54 8.46a5 5 0 0 1 0 7.07M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+            </svg>
+          </span>
+        </button>
+        <input id="volume-slider" type="range" min="0" max="100" value="80" data-i18n-title="volume_slider" title="مستوى الصوت">
+        <span id="volume-value">80%</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Script File -->
+  <script src="script.js"></script>
+</body>
+</html>
