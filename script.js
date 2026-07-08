@@ -223,7 +223,7 @@ const translations = {
     radios_title: 'براہ راست ریڈیو اسٹیشنز',
     radios_label: 'ریڈیو اور اسٹیشنز',
     radios_subtitle: '150 سے زیادہ لائیو نشریات میں سے انتخاب کریں',
-    preset_cairo: 'قاہرہ ریڈیو',
+    preset_cairo: 'قاهرہ ریڈیو',
     preset_saudi: 'سعودی ریڈیو',
     search_radio_placeholder: 'ریڈیو تلاش کریں (جیسے: قاہرہ، منشاوی)...',
     search_reciter_placeholder: 'قاری تلاش کریں...',
@@ -461,7 +461,7 @@ let state = {
   filteredReciters: [],// Filtered reciters list for rendering
   selectedLang: 'ar',  // Active selected language
 
-  
+
   // Audio Player State
   activePlayerMode: 'live', // 'live' or 'library'
   activeRadio: null,       // Currently playing radio object
@@ -489,13 +489,13 @@ document.body.appendChild(radioAudioPlayer);
 const audioPlayer = new Proxy({}, {
   get(target, prop) {
     if (prop === 'addEventListener') {
-      return function(type, listener, options) {
+      return function (type, listener, options) {
         domAudioPlayer.addEventListener(type, listener, options);
         radioAudioPlayer.addEventListener(type, listener, options);
       };
     }
     if (prop === 'removeEventListener') {
-      return function(type, listener, options) {
+      return function (type, listener, options) {
         domAudioPlayer.removeEventListener(type, listener, options);
         radioAudioPlayer.removeEventListener(type, listener, options);
       };
@@ -580,7 +580,7 @@ async function init() {
 
     // Show API online badge
     libraryStatusBadge.style.display = 'inline-flex';
-    
+
     // Choose and play a default radio station
     loadDefaultRadio();
   } catch (error) {
@@ -598,42 +598,42 @@ async function init() {
 function initLanguage() {
   const langSelect = document.getElementById('lang-select');
   const supportedLangs = ['ar', 'en', 'fr', 'ur', 'tr', 'id', 'ms'];
-  
+
   // Choose fallback hierarchy: saved preference -> browser locale -> Arabic (ar) fallback
   const browserLang = navigator.language ? navigator.language.split('-')[0].toLowerCase() : 'ar';
   const savedLang = localStorage.getItem('quran_radio_lang');
   let startLang = 'ar';
-  
+
   if (savedLang && supportedLangs.includes(savedLang)) {
     startLang = savedLang;
   } else if (supportedLangs.includes(browserLang)) {
     startLang = browserLang;
   }
-  
+
   state.selectedLang = startLang;
   if (langSelect) {
     langSelect.value = startLang;
   }
-  
+
   applyTranslations(startLang);
   updateLangSelectLabels();
-  
+
   if (langSelect) {
     langSelect.addEventListener('change', async (e) => {
       const selected = e.target.value;
       state.selectedLang = selected;
-      
+
       // Update directions, tooltips, static UI texts instantly
       applyTranslations(selected);
       updateLangSelectLabels();
       showLoadersOnLangSwitch();
-      
+
       try {
         // Fetch translated lists (or load from local memory cache)
         await fetchSuwar();
         await fetchRadios();
         await fetchReciters();
-        
+
         // Update lists and dropdown contents dynamically
         updateDynamicUI();
       } catch (err) {
@@ -650,15 +650,15 @@ function applyTranslations(lang) {
   const isRtl = (lang === 'ar' || lang === 'ur');
   document.documentElement.setAttribute('dir', isRtl ? 'rtl' : 'ltr');
   document.documentElement.setAttribute('lang', lang);
-  
+
   // Update language selector wrapper direction to match selected language direction
   const langSelectWrapper = document.querySelector('.lang-select-wrapper');
   if (langSelectWrapper) {
     langSelectWrapper.setAttribute('dir', isRtl ? 'rtl' : 'ltr');
   }
-  
+
   localStorage.setItem('quran_radio_lang', lang);
-  
+
   // Element Text translations
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const key = el.getAttribute('data-i18n');
@@ -698,16 +698,7 @@ function updateLangSelectLabels() {
   const langSelect = document.getElementById('lang-select');
   if (!langSelect) return;
 
-  const isMobile = window.innerWidth < 768;
-  const labels = isMobile ? {
-    ar: 'AR',
-    en: 'EN',
-    fr: 'FR',
-    ur: 'UR',
-    tr: 'TR',
-    id: 'ID',
-    ms: 'MS'
-  } : {
+  const labels = {
     ar: 'العربية',
     en: 'English',
     fr: 'Français',
@@ -734,11 +725,11 @@ function showLoadersOnLangSwitch() {
     <div class="shimmer-card"></div>
     <div class="shimmer-card"></div>
   `;
-  
+
   recitersDropdown.disabled = true;
   moshafDropdown.disabled = true;
   surahSearchInput.disabled = true;
-  
+
   const loadingText = translations[state.selectedLang]['loading_reciters'] || 'Loading...';
   recitersDropdown.innerHTML = `<option value="" disabled selected>${loadingText}</option>`;
 }
@@ -749,13 +740,13 @@ function showLoadersOnLangSwitch() {
 function updateDynamicUI() {
   populateRadiosSidebar();
   populateRecitersDropdown();
-  
+
   if (state.selectedReciter) {
     const updatedReciter = state.reciters.find(r => r.id === state.selectedReciter.id);
     if (updatedReciter) {
       state.selectedReciter = updatedReciter;
       recitersDropdown.value = updatedReciter.id;
-      
+
       moshafDropdown.disabled = false;
       moshafDropdown.innerHTML = '';
       updatedReciter.moshaf.forEach(m => {
@@ -764,7 +755,7 @@ function updateDynamicUI() {
         opt.textContent = m.name;
         moshafDropdown.appendChild(opt);
       });
-      
+
       if (state.selectedMoshaf) {
         const updatedMoshaf = updatedReciter.moshaf.find(m => m.id === state.selectedMoshaf.id);
         if (updatedMoshaf) {
@@ -788,7 +779,7 @@ function updateDynamicUI() {
     const metadata = state.suwarMap[state.selectedSurahId] || { name: `Surah ${state.selectedSurahId}` };
     const surahPrefix = translations[state.selectedLang]['surah'] || 'Surah';
     nowPlayingTitle.textContent = `${surahPrefix} ${metadata.name}`;
-    
+
     if (state.selectedReciter && state.selectedMoshaf) {
       nowPlayingSubtitle.textContent = `${state.selectedReciter.name} (${state.selectedMoshaf.name})`;
     }
@@ -842,7 +833,7 @@ function setupCanvas() {
     canvas.height = rect.height * dpr;
     canvasCtx.scale(dpr, dpr);
   };
-  
+
   resizeCanvas();
   window.addEventListener('resize', () => {
     resizeCanvas();
@@ -873,18 +864,18 @@ function setupAudioListeners() {
 
   audioPlayer.addEventListener('play', () => {
     playPauseIcon.innerHTML = SVG_PAUSE;
-    
+
     // Add layout and design breathing animation markers
     visualizerBox.classList.add('playing');
     document.body.classList.add('is-playing');
-    
+
     playerStatusIcon.classList.add('animate-pulse');
     if (state.activePlayerMode === 'live') {
       playerStatusIcon.innerHTML = SVG_RADIO;
     } else {
       playerStatusIcon.innerHTML = SVG_DISC;
     }
-    
+
     // Trigger visualizer
     if (state.isAudioGraphInit) {
       drawLiveVisualizer();
@@ -894,11 +885,11 @@ function setupAudioListeners() {
   audioPlayer.addEventListener('pause', () => {
     playPauseIcon.innerHTML = SVG_PLAY;
     playerStatusIcon.innerHTML = SVG_RADIO;
-    
+
     // Remove design breathing animation markers
     visualizerBox.classList.remove('playing');
     document.body.classList.remove('is-playing');
-    
+
     playerStatusIcon.classList.remove('animate-pulse');
   });
 
@@ -942,7 +933,7 @@ function setupAudioListeners() {
 
   audioPlayer.addEventListener('error', (e) => {
     console.error('Audio playback error:', e);
-    
+
     // If loading failed and crossOrigin was anonymous, try loading without crossOrigin as a fallback
     if (audioPlayer.crossOrigin === "anonymous") {
       console.warn("CORS playback failed. Retrying without CORS...");
@@ -953,7 +944,7 @@ function setupAudioListeners() {
       audioPlayer.play().catch(err => console.log('Fallback playback failed:', err));
       return;
     }
-    
+
     nowPlayingSubtitle.textContent = translations[state.selectedLang]['playback_failed'] || 'Audio load failed. Reconnecting...';
   });
 }
@@ -1096,9 +1087,9 @@ async function fetchRadios() {
   if (data && data.radios) {
     // Keywords for content to filter out (Quran-only constraint)
     const nonQuranKeywords = [
-      'تفسير', 'tafsir', 'فتاوى', 'fatawa', 'سيرة', 'biography', 'السيرة', 
-      'أذكار', 'adhkar', 'الرقية', 'ruqyah', 'صحيح', 'sahih', 'البخاري', 
-      'مسلم', 'رياض الصالحين', 'تكبيرات', 'قصص', 'الشمائل', 'كتاب', 
+      'تفسير', 'tafsir', 'فتاوى', 'fatawa', 'سيرة', 'biography', 'السيرة',
+      'أذكار', 'adhkar', 'الرقية', 'ruqyah', 'صحيح', 'sahih', 'البخاري',
+      'مسلم', 'رياض الصالحين', 'تكبيرات', 'قصص', 'الشمائل', 'كتاب',
       'ترجمة', 'معاني', 'translation'
     ];
     state.radios = data.radios.filter(radio => {
@@ -1115,7 +1106,7 @@ async function fetchReciters() {
   const data = await fetchAPIWithCache(url);
   if (data && data.reciters) {
     const nonQuranKeywords = ['ترجمة', 'translation', 'تفسير', 'tafsir', 'معاني', 'meanings', 'كتاب'];
-    
+
     // Filter reciter's moshafs to keep only pure recitation Quran editions
     const filteredReciters = data.reciters.map(reciter => {
       if (!reciter.moshaf) return null;
@@ -1157,7 +1148,7 @@ async function fetchAPI(url) {
  */
 function populateRadiosSidebar() {
   radiosListContainer.innerHTML = '';
-  
+
   if (state.filteredRadios.length === 0) {
     const noRadiosText = translations[state.selectedLang]['no_radios_found'] || 'No radio stations found';
     radiosListContainer.innerHTML = `
@@ -1170,10 +1161,10 @@ function populateRadiosSidebar() {
 
   state.filteredRadios.forEach(radio => {
     const isActive = state.activePlayerMode === 'live' && state.activeRadio && state.activeRadio.id === radio.id;
-    
+
     const radioBtn = document.createElement('button');
     radioBtn.className = `station-btn ${isActive ? 'active' : ''}`;
-    
+
     const liveText = translations[state.selectedLang]['live_badge'] || 'Live';
     radioBtn.innerHTML = `
       <div class="station-btn-content">
@@ -1199,7 +1190,7 @@ function populateRadiosSidebar() {
 function populateRecitersDropdown() {
   const placeholderText = translations[state.selectedLang]['select_reciter_first'] || 'Select reciter...';
   recitersDropdown.innerHTML = `<option value="" disabled selected>${placeholderText}</option>`;
-  
+
   state.filteredReciters.forEach(reciter => {
     const opt = document.createElement('option');
     opt.value = reciter.id;
@@ -1215,7 +1206,7 @@ function loadDefaultRadio() {
   if (state.radios.length > 0) {
     let defaultRadio = state.radios.find(r => r.name.includes('القاهرة') || r.name.toLowerCase().includes('cairo') || r.name.toLowerCase().includes('qahira'));
     if (!defaultRadio) defaultRadio = state.radios[0];
-    
+
     loadRadioStream(defaultRadio, false); // Do not autoplay on initial page load
   }
 }
@@ -1225,15 +1216,30 @@ function loadDefaultRadio() {
  */
 function handleQuickRadioPreset(type) {
   let targetRadio = null;
-  if (type === 'cairo') {
-    targetRadio = state.radios.find(r => r.name.includes('القاهرة') || r.name.toLowerCase().includes('cairo') || r.name.toLowerCase().includes('qahira'));
+  if (type === 'minshawi') {
+    // Search for Al-Minshawi (Mohammed Siddiq Al-Minshawi) — iconic Egyptian reciter in the API
+    targetRadio = state.radios.find(r =>
+      r.name.includes('المنشاوي') ||
+      r.name.includes('منشاوي') ||
+      r.name.toLowerCase().includes('minshawi') ||
+      r.name.toLowerCase().includes('alminshawi') ||
+      r.name.toLowerCase().includes('siddiq')
+    );
   } else if (type === 'saudi') {
-    targetRadio = state.radios.find(r => r.name.includes('المملكة') || r.name.includes('سعودية') || r.name.includes('الحرمين') || r.name.toLowerCase().includes('saudi') || r.name.toLowerCase().includes('haramain'));
+    targetRadio = state.radios.find(r =>
+      r.name.includes('السعودية') ||
+      r.name.includes('السعودي') ||
+      r.name.includes('المملكة') ||
+      r.name.includes('سعودية') ||
+      r.name.includes('الحرمين') ||
+      r.name.toLowerCase().includes('saudi') ||
+      r.name.toLowerCase().includes('haramain')
+    );
   }
 
   if (targetRadio) {
     loadRadioStream(targetRadio);
-    
+
     // Clear search filter & rebuild list to show playing
     radioSearchInput.value = '';
     state.filteredRadios = [...state.radios];
@@ -1246,10 +1252,10 @@ function handleQuickRadioPreset(type) {
  */
 function loadRadioStream(radio, autoplay = true) {
   state.activePlayerMode = 'live';
-  
+
   // Pause the library player to prevent overlapping audio
   domAudioPlayer.pause();
-  
+
   state.activeRadio = radio;
   state.selectedReciter = null;
   state.selectedMoshaf = null;
@@ -1259,18 +1265,18 @@ function loadRadioStream(radio, autoplay = true) {
   playerModeBadge.className = 'badge badge-danger';
   const liveModeText = translations[state.selectedLang]['live_mode'] || 'Live';
   playerModeBadge.innerHTML = `<span class="badge-dot animate-pulse"></span>${liveModeText}`;
-  
+
   nowPlayingTitle.textContent = radio.name;
   nowPlayingSubtitle.textContent = translations[state.selectedLang]['live_subtitle'] || 'Continuous live stream';
 
-  
+
   timelineContainer.style.display = 'none'; // Hide progress bar during live streams
 
   // Disable CORS for live streams as Icecast/Shoutcast servers often have compatibility issues with Origin headers
   audioPlayer.removeAttribute('crossorigin');
   audioPlayer.src = radio.url;
   audioPlayer.load();
-  
+
   if (autoplay) {
     playAudio();
   } else {
@@ -1290,11 +1296,11 @@ function loadRadioStream(radio, autoplay = true) {
  */
 function handleReciterSelect(reciter) {
   state.selectedReciter = reciter;
-  
+
   // Re-enable/populate Moshaf dropdown
   moshafDropdown.disabled = false;
   moshafDropdown.innerHTML = '';
-  
+
   reciter.moshaf.forEach((m, idx) => {
     const opt = document.createElement('option');
     opt.value = m.id;
@@ -1314,14 +1320,14 @@ function handleReciterSelect(reciter) {
  */
 function handleMoshafSelect(moshaf) {
   state.selectedMoshaf = moshaf;
-  
+
   // Enable surah search
   surahSearchInput.disabled = false;
   surahSearchInput.value = '';
 
   // Parse surah list from comma-separated values
   state.selectedSurahsList = moshaf.surah_list.split(',').map(idStr => parseInt(idStr.trim()));
-  
+
   // Update surah count badge
   surahCountBadge.textContent = state.selectedSurahsList.length;
 
@@ -1354,17 +1360,17 @@ function populateSurahsGrid(filterText = '') {
 
   matchedSurahs.forEach(id => {
     const metadata = state.suwarMap[id] || { name: `${surahLabel} ${id}`, isMeccan: true };
-    const isPlaying = state.activePlayerMode === 'library' 
-                      && state.selectedReciter?.id === state.selectedReciter?.id
-                      && state.selectedMoshaf?.id === state.selectedMoshaf?.id
-                      && state.selectedSurahId === id;
+    const isPlaying = state.activePlayerMode === 'library'
+      && state.selectedReciter?.id === state.selectedReciter?.id
+      && state.selectedMoshaf?.id === state.selectedMoshaf?.id
+      && state.selectedSurahId === id;
 
     const surahCard = document.createElement('button');
     surahCard.className = `surah-card ${isPlaying ? 'active' : ''}`;
 
-    const typeLabel = metadata.isMeccan ? 
-                      (translations[state.selectedLang]['meccan'] || 'Meccan') : 
-                      (translations[state.selectedLang]['medinan'] || 'Medinan');
+    const typeLabel = metadata.isMeccan ?
+      (translations[state.selectedLang]['meccan'] || 'Meccan') :
+      (translations[state.selectedLang]['medinan'] || 'Medinan');
     const pageLabel = translations[state.selectedLang]['page'] || 'Page';
     const unknownLabel = translations[state.selectedLang]['unknown'] || 'Unknown';
     const pageText = `${pageLabel} ${metadata.startPage || unknownLabel}`;
@@ -1403,17 +1409,17 @@ function loadSurah(surahId) {
   if (!state.selectedReciter || !state.selectedMoshaf) return;
 
   state.activePlayerMode = 'library';
-  
+
   // Pause the live player to prevent overlapping audio
   radioAudioPlayer.pause();
-  
+
   state.selectedSurahId = surahId;
   state.activeRadio = null;
 
   const surahLabel = translations[state.selectedLang]['surah'] || 'Surah';
   const metadata = state.suwarMap[surahId] || { name: `${surahLabel} ${surahId}` };
   const paddedId = String(surahId).padStart(3, '0');
-  
+
   // Construct direct MP3 URL
   const server = state.selectedMoshaf.server;
   const audioUrl = `${server}${paddedId}.mp3`;
@@ -1477,9 +1483,9 @@ function initAudioGraph() {
   try {
     const AudioContextClass = window.AudioContext || window.webkitAudioContext;
     state.audioContext = new AudioContextClass();
-    
+
     state.analyserNode = state.audioContext.createAnalyser();
-    state.analyserNode.fftSize = 256; 
+    state.analyserNode.fftSize = 256;
 
     state.sourceNode = state.audioContext.createMediaElementSource(domAudioPlayer);
     state.sourceNode.connect(state.analyserNode);
@@ -1487,7 +1493,7 @@ function initAudioGraph() {
 
     state.isAudioGraphInit = true;
     visualizerFallback.classList.add('hidden');
-    
+
     drawLiveVisualizer();
   } catch (error) {
     console.error('Failed to init Web Audio API. Visualizer will fallback.', error);
@@ -1570,7 +1576,7 @@ function handleNextBtn() {
  */
 function playNextSurah() {
   if (state.selectedSurahsList.length === 0 || state.selectedSurahId === null) return;
-  
+
   const currentIdx = state.selectedSurahsList.indexOf(state.selectedSurahId);
   if (currentIdx !== -1) {
     const nextIdx = (currentIdx + 1) % state.selectedSurahsList.length;
@@ -1584,7 +1590,7 @@ function playNextSurah() {
  */
 function playPrevSurah() {
   if (state.selectedSurahsList.length === 0 || state.selectedSurahId === null) return;
-  
+
   const currentIdx = state.selectedSurahsList.indexOf(state.selectedSurahId);
   if (currentIdx !== -1) {
     const prevIdx = (currentIdx - 1 + state.selectedSurahsList.length) % state.selectedSurahsList.length;
@@ -1598,18 +1604,34 @@ function playPrevSurah() {
  */
 function filterRadiosList(query) {
   const normQuery = query.trim().toLowerCase();
-  state.filteredRadios = state.radios.filter(radio => 
+  state.filteredRadios = state.radios.filter(radio =>
     radio.name.toLowerCase().includes(normQuery)
   );
   populateRadiosSidebar();
 }
 
 function filterRecitersList(query) {
-  const normQuery = query.trim().toLowerCase();
-  state.filteredReciters = state.reciters.filter(reciter => 
-    reciter.name.toLowerCase().includes(normQuery)
+  const normQuery = query.trim();
+  if (!normQuery) {
+    // Empty query: reset to full list
+    state.filteredReciters = [...state.reciters];
+    populateRecitersDropdown();
+    return;
+  }
+
+  // Arabic names don't benefit from toLowerCase, so compare both as-is and lowercased
+  state.filteredReciters = state.reciters.filter(reciter =>
+    reciter.name.toLowerCase().includes(normQuery.toLowerCase()) ||
+    reciter.name.includes(normQuery)
   );
   populateRecitersDropdown();
+
+  // If exactly one match, auto-select it for immediate feedback
+  if (state.filteredReciters.length === 1) {
+    const reciter = state.filteredReciters[0];
+    recitersDropdown.value = reciter.id;
+    handleReciterSelect(reciter);
+  }
 }
 
 function filterSurahsGrid(query) {
@@ -1632,7 +1654,7 @@ function drawIdleVisualizer() {
     const width = canvas.width / (window.devicePixelRatio || 1);
     const height = canvas.height / (window.devicePixelRatio || 1);
     const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-    
+
     // Clear canvas - matches background mode
     canvasCtx.fillStyle = isDark ? 'rgba(26, 31, 38, 0.2)' : 'rgba(250, 247, 240, 0.2)';
     canvasCtx.fillRect(0, 0, width, height);
@@ -1640,7 +1662,7 @@ function drawIdleVisualizer() {
     // Draw peaceful gold waves in center
     canvasCtx.lineWidth = 1.5;
     canvasCtx.strokeStyle = isDark ? 'rgba(201, 162, 39, 0.35)' : 'rgba(201, 162, 39, 0.25)'; // Gold
-    
+
     canvasCtx.beginPath();
     const time = Date.now() * 0.002;
     for (let i = 0; i < width; i++) {
@@ -1705,19 +1727,19 @@ function drawLiveVisualizer() {
     const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
 
     // Clear Canvas
-    canvasCtx.fillStyle = isDark ? 'rgba(26, 31, 38, 0.18)' : 'rgba(250, 247, 240, 0.18)'; 
+    canvasCtx.fillStyle = isDark ? 'rgba(26, 31, 38, 0.18)' : 'rgba(250, 247, 240, 0.18)';
     canvasCtx.fillRect(0, 0, width, height);
 
     const centerX = width / 2;
     const centerY = height / 2;
-    
+
     // Average frequency to drive ambient glow radius
     let sum = 0;
     for (let i = 0; i < bufferLength; i++) {
       sum += dataArray[i];
     }
     const avg = sum / bufferLength;
-    
+
     // Dynamic central circle size pulsing with volume/beats
     const baseRadius = Math.min(width, height) * 0.22;
     const pulseRadius = baseRadius + (avg * 0.15);
@@ -1743,7 +1765,7 @@ function drawLiveVisualizer() {
     const barAngle = (2 * Math.PI) / numBars;
 
     for (let i = 0; i < numBars; i++) {
-      const dataIdx = Math.floor((i / numBars) * (bufferLength * 0.7)); 
+      const dataIdx = Math.floor((i / numBars) * (bufferLength * 0.7));
       const value = dataArray[dataIdx];
       const barLength = (value / 255) * (baseRadius * 0.7);
 
@@ -1760,7 +1782,7 @@ function drawLiveVisualizer() {
       canvasCtx.strokeStyle = lineGrad;
       canvasCtx.lineWidth = 2.5;
       canvasCtx.lineCap = 'round';
-      
+
       canvasCtx.beginPath();
       canvasCtx.moveTo(startX, startY);
       canvasCtx.lineTo(endX, endY);

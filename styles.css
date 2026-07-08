@@ -47,6 +47,12 @@ html[lang="ar"], html[lang="ur"] {
   transition: background-color var(--transition-speed), border-color var(--transition-speed), color var(--transition-speed);
 }
 
+html {
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100vw;
+}
+
 body {
   font-family: var(--font-sans);
   background-color: var(--color-bg);
@@ -57,7 +63,7 @@ body {
   flex-direction: column;
   line-height: 1.6;
   direction: inherit;
-  padding-bottom: calc(96px + env(safe-area-inset-bottom)); /* Respect safe area bottom padding */
+  padding-bottom: calc(140px + env(safe-area-inset-bottom)) !important; /* Ensure content clears the fixed bottom player */
   position: relative;
   overflow-x: hidden;
 }
@@ -371,12 +377,29 @@ body {
 }
 
 /* Grid Layouts */
-.main-content {
+.main-content,
+.main-content-wrapper {
   flex-grow: 1;
   padding: 2.5rem 0;
   display: flex;
-  flex-direction: column;
+  flex-direction: column; /* Forces everything to stack vertically */
+  align-items: stretch;   /* Forces all children to stretch to full width */
   gap: 2.5rem;
+  width: 100%;
+  max-width: 100vw;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  padding-inline: 0; /* Keep flush by default; mobile media query adds 16px */
+  padding-bottom: 150px !important; /* Pushes scroll area above fixed bottom player */
+}
+
+/* Bottom "On-Demand Library" card — force full width in all directions */
+.on-demand-section {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box; /* Ensures padding doesn't push it off-screen */
+  margin-inline: 0;       /* Reset any leftover physical margins */
 }
 
 .grid-cols-12 {
@@ -388,6 +411,7 @@ body {
 @media (min-width: 992px) {
   .grid-cols-12 {
     grid-template-columns: repeat(12, 1fr);
+    gap: 2.5rem;
   }
   .lg-span-7 {
     grid-column: span 7;
@@ -407,10 +431,46 @@ body {
   display: flex;
   flex-direction: column;
   position: relative;
+  /* Hard clamp: nothing inside can bleed past the card border */
+  overflow: hidden;
+  box-sizing: border-box;
+  min-width: 0; /* Flexbox min-width hack: allows the card to shrink */
+  width: 100%;
+}
+
+/* ✅ Flips automatically based on language */
+.card {
+  /* Use logical properties to keep spacing consistent */
+  margin-inline-start: 0;
+  margin-inline-end: 0;
+
+  /* Ensure the card takes up the full space provided by the wrapper */
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+
+  /* Acts as a physical wall — nothing can expand past the card's border */
+  overflow: hidden !important;
+
+  /* Prevents long words from breaking the card width */
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+
+/* Default styles for LTR (English, etc.) */
+[dir="ltr"] .card {
+  /* LTR specific tweaks here */
+}
+
+/* Override styles for RTL (Arabic) */
+[dir="rtl"] .card {
+  /* RTL specific tweaks here */
 }
 
 .flat-card-title-group {
   margin-bottom: 1.25rem;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 1rem;
 }
 
 .card-label {
@@ -450,6 +510,8 @@ body {
   align-items: center;
   justify-content: center;
   box-shadow: 0 0 20px var(--color-shadow);
+  min-width: 0; /* Flexbox min-width hack: allows the container to shrink */
+  box-sizing: border-box;
 }
 
 .visualizer-container::after {
@@ -516,6 +578,25 @@ body {
 
 .visualizer-overlay span {
   font-size: 0.75rem;
+  white-space: normal !important; /* Forces text to wrap instead of stretching the box */
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  text-align: center;
+  width: 100%;
+  min-width: 0;
+}
+
+/* Restrict canvas, SVG, and images inside cards to stay within card bounds.
+   Uses !important to override any inline styles injected by JavaScript. */
+.flat-card canvas,
+.flat-card svg:not(.card-icon),
+.flat-card img,
+.card canvas,
+.card svg:not(.card-icon),
+.card img {
+  max-width: 100% !important;
+  width: 100% !important;
+  object-fit: contain; /* Scales down without distorting aspect ratio */
 }
 
 /* Spotify-style Fixed Bottom Player Bar */
@@ -524,15 +605,22 @@ body {
   bottom: 0 !important;
   left: 0 !important;
   right: 0 !important;
+  width: 100% !important;         /* Stretch across the full screen width */
+  z-index: 9999 !important;       /* Stays on top of all scrolling cards */
   height: calc(84px + env(safe-area-inset-bottom));
-  background-color: var(--color-surface);
+  background-color: var(--color-surface); /* Theme-aware: white in light, dark charcoal in dark */
   border-top: 1px solid var(--color-border);
   box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.04);
-  z-index: 100;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 2rem calc(0px + env(safe-area-inset-bottom)) 2rem;
+  /* top padding normal, bottom pads for iOS home indicator */
+  padding: 0 2rem env(safe-area-inset-bottom) 2rem;
+}
+
+/* Dark theme: ensure the player bar stays fully opaque so cards don't bleed through */
+[data-theme="dark"] .player-bottom-bar {
+  background-color: #1A1F26; /* Matches --color-surface in dark mode */
 }
 
 .bottom-bar-info {
@@ -544,6 +632,7 @@ body {
   overflow: hidden;
   text-align: right;
 }
+
 
 .info-thumbnail {
   width: 2.75rem;
@@ -686,7 +775,8 @@ body.is-playing .info-thumbnail::before {
   .container {
     padding: 0 0.75rem;
   }
-  .main-content {
+  .main-content,
+  .main-content-wrapper {
     padding: 1rem 0;
     gap: 1rem;
   }
@@ -1465,8 +1555,8 @@ input[type="range"]:hover::-webkit-slider-thumb {
    ========================================================================== */
 @media (max-width: 767px) {
   /* Layout gaps */
-  .grid-layout {
-    gap: 0.75rem;
+  .grid-cols-12 {
+    gap: 1rem;
   }
   
   /* Cards compact padding */
@@ -1477,6 +1567,7 @@ input[type="range"]:hover::-webkit-slider-thumb {
   /* Compact stacked title layouts */
   .flat-card-title-group {
     margin-bottom: 0.6rem;
+    padding-bottom: 0.6rem;
   }
   .card-label {
     display: block;
@@ -1568,3 +1659,62 @@ input[type="range"]:hover::-webkit-slider-thumb {
   }
 }
 
+/* ==========================================================================
+   Mobile Full-Width & iOS Safe Area Fixes (screens <= 768px)
+   ========================================================================== */
+@media screen and (max-width: 768px) {
+
+  /* Force cards to take the exact width of the phone screen */
+  .card,
+  .on-demand-section {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-inline-start: 0 !important;
+    margin-inline-end: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Prevent the parent container from shrinking or causing horizontal scroll */
+  .main-content-wrapper {
+    width: 100% !important;
+    overflow-x: hidden;
+  }
+
+  /* iOS Safari safe-area: add standard padding PLUS the iOS bottom bar height */
+  body {
+    padding-bottom: calc(140px + env(safe-area-inset-bottom)) !important;
+  }
+
+  /* Ensure the player itself does not hide behind the iPhone home indicator */
+  .player-bottom-bar {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* ==========================================================================
+   Inner Content Bleed Fixes
+   Prevents child elements from spilling past the card boundary
+   ========================================================================== */
+
+/* All descendants of .card and the visualizer container must stay within bounds */
+.card *,
+.visualizer-container * {
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Visualizer overlay text should wrap instead of stretching the box */
+.visualizer-overlay span {
+  white-space: normal !important;
+  word-wrap: break-word;
+  text-align: center;
+  width: 100%;
+}
+
+/* Mobile: add breathing room so cards don't touch the exact screen edge */
+@media screen and (max-width: 768px) {
+  .main-content,
+  .main-content-wrapper {
+    padding-inline: 16px;
+  }
+}
