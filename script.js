@@ -1197,6 +1197,13 @@ function populateRecitersDropdown() {
     opt.textContent = reciter.name;
     recitersDropdown.appendChild(opt);
   });
+
+  recitersDropdown.disabled = false;
+
+  // Re-apply selected value if a reciter was already chosen
+  if (state.selectedReciter) {
+    recitersDropdown.value = state.selectedReciter.id;
+  }
 }
 
 /**
@@ -1613,7 +1620,7 @@ function filterRadiosList(query) {
 function filterRecitersList(query) {
   const normQuery = query.trim();
   if (!normQuery) {
-    // Empty query: reset to full list
+    // Empty query: show full list
     state.filteredReciters = [...state.reciters];
     populateRecitersDropdown();
     return;
